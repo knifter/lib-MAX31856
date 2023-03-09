@@ -1,15 +1,17 @@
 #ifndef __MAX31856_REGS_H
 #define __MAX31856_REGS_H
 
+
 #define REG_CONFIG0                 0x00
   #define CONFIG0_50HZ              0x01 // 50 Hz mode
   #define CONFIG0_FAULTCLR          0x02 // Config 0 fault clear flag
   #define CONFIG0_FAULT             0x04 // Config 0 fault mode flag
-  #define CONFIG0_CJ                0x08 // Config 0 cold junction disable flag
+  #define CONFIG0_CJ_DISABLE        0x08 // Config 0 cold junction disable flag
   #define CONFIG0_OCFAULT0          0x10 // Config 0 open circuit fault 0 flag
   #define CONFIG0_OCFAULT1          0x20 // Config 0 open circuit fault 1 flag
   #define CONFIG0_1SHOT             0x40 // Config 0 one shot convert flag
   #define CONFIG0_AUTOCONVERT       0x80 // Config 0 Auto convert flag
+#define REG_CONFIG0_DEFAULTS        (CONFIG0_OCFAULT0 | CONFIG0_50HZ)
 
 #define REG_CONFIG1                 0x01
 #define REG_FMASK                   0x02 // Fault Mask register
@@ -25,6 +27,7 @@
 #define REG_LTCBH                   0x0C  // Linearized TC Temperature, Byte 2
 #define REG_LTCBM                   0x0D  // Linearized TC Temperature, Byte 1
 #define REG_LTCBL                   0x0E  // Linearized TC Temperature, Byte 0
+#define REG_LTCBx_LSB               (0.0078125)
 #define REG_STATUS                  0x0F  // Fault Status Register
 
 #define  FAULT_CJRANGE  0x80 // Fault status Cold Junction Out-of-Range flag

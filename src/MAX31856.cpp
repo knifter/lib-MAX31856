@@ -3,24 +3,23 @@
 
 #include <stdlib.h>
 
+// #include <tools-log.h>
+
 bool MAX31856::begin()
 {
-    _spi.begin();
+    SPIDevice::begin();
 
     // assert on any fault
     writereg8(REG_FMASK, 0x00);
 
-    // Write defaults to CONFIG0
+    // Start with some defaults to CONFIG0
     writereg8(REG_CONFIG0, REG_CONFIG0_DEFAULTS);
 
-    // set cold junction temperature offset to zero
+    // Set other defaults
     setColdJunctionOffset(0);
-
-    // set Type K by default
+    setColdJunctionFaultThreshholds(-55, 125);
     setThermocoupleType(TCTYPE_K);
-
-    // set One-Shot conversion mode
-    setConversionMode(_conversion_mode);
+    setConversionMode(MODE_ONESHOT);
 
     return true;
 };
@@ -161,25 +160,25 @@ float MAX31856::readThermocoupleTemperature()
   if(_conversion_mode == MODE_ONESHOT)
   {
     triggerOneShot();
-    uint32_t start = millis();
+    time_t start = millis();
     while (!conversionComplete()) 
     {
-      if (millis() - start > 250)
+      if (millis() - start > 250) // takes about 185ms
         return NAN;
       delay(5);
     };
+    // time_t end = millis();
+    // DBG("Conversion complete after %d ms", end - start);
   };
 
   // read the thermocouple temperature registers (3 bytes)
   int32_t temp24 = readreg24(REG_LTCBH);
-  
+
   // extend sign to 32-bit
-  if (temp24 & 0x800000) 
-    temp24 |= 0xFF000000;
+  if (temp24 & 0x00800000) 
+    temp24 |=  0xFF000000;
+  temp24 >>= 5; // bottom 5 bits are unused, sign bit is extended
 
-  // FIXME: shouldn't this be done before sign extending?
-  temp24 >>= 5; // bottom 5 bits are unused
-
-  return temp24 * 0.0078125;
+  return temp24 * REG_LTCBx_LSB;
 };
 

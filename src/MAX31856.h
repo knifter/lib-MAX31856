@@ -7,7 +7,7 @@ class MAX31856 : SPIDevice
 {
     public:
         MAX31856(SPIClass& spi, const uint8_t pin_cs)
-            : SPIDevice(spi, pin_cs, 1000000, SPI_MSBFIRST, SPI_MODE0) {};
+            : SPIDevice(spi, pin_cs, 4000000, SPI_MSBFIRST, SPI_MODE1) {};
         
         bool begin();
 
