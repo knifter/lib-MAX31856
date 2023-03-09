@@ -41,6 +41,7 @@ class MAX31856 : SPIDevice
 
         uint8_t getFault(void);
         void setColdJunctionFaultThreshholds(const int8_t low, const int8_t high);
+        void setColdJunctionOffset(const int8_t t);
         void setTempFaultThreshholds(const float flow, const float fhigh);
         void triggerOneShot(void);
         bool conversionComplete(void);
@@ -49,6 +50,10 @@ class MAX31856 : SPIDevice
 
     private:
         conversion_mode_t _conversion_mode = MODE_ONESHOT;
+
+    private:
+        MAX31856(const MAX31856&);
+        MAX31856& operator=(const MAX31856&);
 
 };
 

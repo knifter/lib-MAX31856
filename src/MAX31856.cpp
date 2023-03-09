@@ -10,12 +10,11 @@ bool MAX31856::begin()
     // assert on any fault
     writereg8(REG_FMASK, 0x00);
 
-    // enable open circuit fault detection
-    writereg8(REG_CONFIG0, CONFIG0_OCFAULT0);
+    // Write defaults to CONFIG0
+    writereg8(REG_CONFIG0, REG_CONFIG0_DEFAULTS);
 
     // set cold junction temperature offset to zero
-    writereg8(REG_CJTO, 0x0);
-    //FIXME setColdJunctionOffset()
+    setColdJunctionOffset(0);
 
     // set Type K by default
     setThermocoupleType(TCTYPE_K);
@@ -66,6 +65,11 @@ void MAX31856::setNoiseFilter(noise_filter_t nf)
 uint8_t MAX31856::getFault(void) 
 {
    return readreg8(REG_STATUS);
+};
+
+void MAX31856::setColdJunctionOffset(const int8_t t)
+{
+    writereg8(REG_CJTO, t);
 };
 
 /**************************************************************************/
