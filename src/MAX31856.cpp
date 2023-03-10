@@ -9,6 +9,12 @@ bool MAX31856::begin()
 {
     SPIDevice::begin();
 
+    // Check if the chip is there
+    writereg8(REG_FMASK, 0xFF); // do not trigger new faults
+    writereg8(REG_CONFIG0, CONFIG0_FAULTCLR); // clear faults
+    if(readreg8(REG_STATUS) != 0x00) // should be zero
+        return false;
+
     // assert on any fault
     writereg8(REG_FMASK, 0x00);
 
